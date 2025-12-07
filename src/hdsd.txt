@@ -1,0 +1,34 @@
+🔥 Ý nghĩa từng tầng
+🟢 view
+
+chỉ UI
+
+không xử lý nghiệp vụ
+
+không lưu data
+
+🔵 controller
+
+nhận action từ view
+
+gọi service
+
+🟡 service
+
+xử lý nghiệp vụ
+
+validate
+
+gọi repository
+
+🟠 repository / model
+
+làm việc với dữ liệu
+
+JSON / DB
+
+⚫ utils
+
+tiện ích
+
+đọc ghi file,...
