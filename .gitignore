@@ -1,0 +1,24 @@
+# Compiled class files
+*.class
+
+# JAR files (don't commit dependencies)
+*.jar
+!App.jar
+
+# VS Code
+.vscode/
+
+# Backup files
+*.backup
+*.bak
+
+# Test files
+Test*.java
+Test*.class
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# MongoDB data directory
+/data/db/
