@@ -1,10 +1,22 @@
 package app.view;
 
-import app.service.TodoService;
-import app.model.TodoItem;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+import app.model.TodoItem;
+import app.service.TodoService;
+import app.ultis.CustomJButton;
 
 public class TodoPanel extends JPanel {
 
@@ -16,27 +28,38 @@ public class TodoPanel extends JPanel {
         setLayout(new BorderLayout());
 
         /// ===== First Row =====
-        /// 
-        JPanel firstRow = new JPanel(new BorderLayout());
-        JLabel heading = new JLabel("Add Task for good day: ");
-        firstRow.add(heading, BorderLayout.CENTER);
+        ///
+        /// ===== TOP container =====
+        JPanel top = new JPanel();
+        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
 
-        /// ===== Input Row =====
+        /// first row
+        JLabel heading = new JLabel("Thêm công việc cho hôm nay nào: ");
+        heading.setAlignmentX(Component.LEFT_ALIGNMENT);
+        heading.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 0));
+        
+
+        /// input row
         JPanel inputRow = new JPanel(new BorderLayout());
-        JTextField input = new JTextField();
-        JButton addBtn = new JButton("Them");
-        // JButton addBtn2 = new JButton("Add");
+        inputRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        JTextField input = new JTextField();
+        JButton addBtn = new JButton("Thêm");
+        // addBtn.setFocusPainted(false);
         input.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         addBtn.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
         inputRow.add(input, BorderLayout.CENTER);
         inputRow.add(addBtn, BorderLayout.EAST);
-        // inputRow.add(addBtn2, BorderLayout.WEST);
 
-        /// ⭐ đặt inputRow lên NORTH
-        // add(firstRow, BorderLayout.NORTH);
-        add(inputRow, BorderLayout.NORTH);
+        inputRow.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
+
+        /// put BOTH into top
+        top.add(heading);
+        top.add(Box.createVerticalStrut(5)); // margin
+        top.add(inputRow);
+
+        add(top, BorderLayout.NORTH);
 
         /// ===== List panel =====
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
@@ -67,11 +90,14 @@ public class TodoPanel extends JPanel {
 
     private JPanel createRow(TodoItem item) {
         JPanel row = new JPanel(new BorderLayout());
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // height 40px
+        
         JCheckBox cb = new JCheckBox(item.getTitle(), item.isCompleted());
         JButton delete = new JButton("X");
 
         row.add(cb, BorderLayout.CENTER);
         row.add(delete, BorderLayout.EAST);
+        row.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         cb.addActionListener(e -> service.toggleCompleted(item));
         delete.addActionListener(e -> {
