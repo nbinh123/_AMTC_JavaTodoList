@@ -6,6 +6,20 @@
             "name": "Main",
             "request": "launch",
             "mainClass": "app.Main",
+            "projectName": "your-project"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "main.java.app.Main",
+            "projectName": "your-project"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "app.Main",
             "projectName": "App_7cf42c19"
         },
         {
