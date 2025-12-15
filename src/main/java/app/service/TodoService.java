@@ -1,6 +1,7 @@
 package app.service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,6 +72,8 @@ public class TodoService {
     public void addTask(String title, LocalDate date) {
         TodoItem item = new TodoItem(title, date);
         // Thêm vào danh sách...
+        repository.add(item);
+        System.out.println("Task added to MongoDB: " + title);
     }
     
     // ✅ Lấy tasks theo ngày
@@ -79,51 +82,22 @@ public class TodoService {
             .filter(item -> item.getDate().equals(date))
             .collect(Collectors.toList());
     }
+
+    public void addTask(String title, LocalDate date, String createdBy) {
+        TodoItem item = new TodoItem(title, date, createdBy);
+        // Thêm vào list...
+        repository.add(item);
+        System.out.println("Task added to MongoDB: " + title);
+    }
+
+    public List<TodoItem> getTasksByMonth(YearMonth yearMonth) {
+        return getAll().stream()
+            .filter(item -> {
+                LocalDate itemDate = item.getDate();
+                return itemDate.getYear() == yearMonth.getYear() 
+                    && itemDate.getMonthValue() == yearMonth.getMonthValue();
+            })
+            .collect(Collectors.toList());
+    }
 }
 
-
-// package app.service;
-
-// import java.util.List;
-
-// import app.model.TodoItem;
-// import app.model.TodoRepository;
-
-// public class TodoService {
-
-//     private final TodoRepository repository;
-
-//     public TodoService() {
-//         this.repository = new TodoRepository();
-//     }
-
-//     // Lấy toàn bộ danh sách
-//     public List<TodoItem> getAll() {
-//         return repository.getAll();
-//     }
-
-//     // Thêm 1 task
-//     public void addTask(String title) {
-//         if (title == null || title.trim().isEmpty()) return;
-
-//         repository.add(new TodoItem(title.trim()));
-//         repository.save();
-//     }
-
-//     // Xoá task
-//     public void removeTask(TodoItem item) {
-//         repository.remove(item);
-//         repository.save();
-//     }
-
-//     // Đánh dấu đã xong
-//     public void toggleCompleted(TodoItem item) {
-//         item.setCompleted(!item.isCompleted());
-//         repository.save();
-//     }
-
-//     // Update toàn bộ vào file
-//     public void save() {
-//         repository.save();
-//     }
-// }

@@ -7,6 +7,7 @@ public class TodoItem {
     private String title;
     private boolean completed;
     private LocalDate date; // ✅ Đã có field này
+    private String createdBy;
     
     public TodoItem() {
         this.id = java.util.UUID.randomUUID().toString();
@@ -38,6 +39,15 @@ public class TodoItem {
         this.date = date;
         this.completed = completed;
     }
+    public TodoItem(String title, LocalDate date, String createdBy) {
+        this();
+        this.title = title;
+        this.date = date;
+        this.createdBy = createdBy;
+    }
+
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
     
     // Getters và Setters
     public String getId() { return id; }

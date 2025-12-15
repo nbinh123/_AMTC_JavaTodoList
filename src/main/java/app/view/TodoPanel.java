@@ -1,7 +1,9 @@
 package app.view;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import app.model.TodoItem;
 import app.service.TodoService;
@@ -29,15 +31,16 @@ public class TodoPanel extends BorderPane {
     private final TodoService service = new TodoService();
     private final VBox listBox = new VBox(12);
     private final Label statsLabel = new Label();
-    private final DatePicker datePicker = new DatePicker(LocalDate.now());
-    private final Label selectedDateLabel = new Label();
+    private YearMonth currentYearMonth = YearMonth.now();
+    private final Label monthYearLabel = new Label();
+    private DatePicker datePicker;
 
     public TodoPanel() {
         setPadding(new Insets(30));
         setStyle("-fx-background-color: linear-gradient(to bottom, #0F0F0F, #1A1A1A);");
 
         /* ===== HEADER ===== */
-        Label title = new Label("✨ Todo Hôm Nay");
+        Label title = new Label("Todo Hôm Nay");
         title.setStyle(
             "-fx-font-size: 32px; " +
             "-fx-font-weight: bold; " +
@@ -50,46 +53,144 @@ public class TodoPanel extends BorderPane {
             "-fx-text-fill: #888888; " +
             "-fx-padding: 5 0 0 0;"
         );
-        updateStats();
 
         VBox headerBox = new VBox(5, title, statsLabel);
         
-        /* ===== CALENDAR SECTION ===== */
-        Label calendarTitle = new Label("📅 Chọn ngày");
+        /* ===== MONTH/YEAR SELECTOR ===== */
+        Label calendarTitle = new Label("Chọn ngày");
         calendarTitle.setStyle(
             "-fx-font-size: 14px; " +
             "-fx-font-weight: bold; " +
             "-fx-text-fill: #AAAAAA;"
         );
 
+        monthYearLabel.setStyle(
+            "-fx-font-size: 16px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-text-fill: #FFFFFF; " +
+            "-fx-padding: 10 15; " +
+            "-fx-background-color: #252525; " +
+            "-fx-background-radius: 15; " +
+            "-fx-min-width: 180; " +
+            "-fx-alignment: center;"
+        );
+        updateMonthYearLabel();
+        
+        datePicker = new DatePicker(LocalDate.now());
         datePicker.setStyle(
             "-fx-background-color: #252525; " +
             "-fx-background-radius: 15; " +
             "-fx-padding: 10 15; " +
             "-fx-font-size: 13px;"
         );
-        datePicker.setPrefWidth(200);
+        datePicker.setPrefWidth(180);
 
-        selectedDateLabel.setStyle(
-            "-fx-font-size: 15px; " +
-            "-fx-font-weight: bold; " +
+        Button prevMonth = new Button("◀");
+        prevMonth.setStyle(
+            "-fx-background-color: #2A2A2A; " +
             "-fx-text-fill: #667eea; " +
-            "-fx-padding: 0 0 0 15;"
+            "-fx-font-size: 16px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-background-radius: 10; " +
+            "-fx-padding: 10 15; " +
+            "-fx-cursor: hand;"
         );
-        updateSelectedDateLabel();
 
-        datePicker.setOnAction(e -> {
-            updateSelectedDateLabel();
-            render();
-            
-            // Animation khi đổi ngày
-            FadeTransition ft = new FadeTransition(Duration.millis(300), listBox);
-            ft.setFromValue(0.5);
-            ft.setToValue(1.0);
-            ft.play();
+        prevMonth.setOnMouseEntered(e -> {
+            prevMonth.setStyle(
+                "-fx-background-color: #667eea; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 16px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-background-radius: 10; " +
+                "-fx-padding: 10 15; " +
+                "-fx-cursor: hand;"
+            );
         });
 
-        HBox calendarRow = new HBox(15, datePicker, selectedDateLabel);
+        prevMonth.setOnMouseExited(e -> {
+            prevMonth.setStyle(
+                "-fx-background-color: #2A2A2A; " +
+                "-fx-text-fill: #667eea; " +
+                "-fx-font-size: 16px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-background-radius: 10; " +
+                "-fx-padding: 10 15; " +
+                "-fx-cursor: hand;"
+            );
+        });
+
+        Button nextMonth = new Button("▶");
+        nextMonth.setStyle(
+            "-fx-background-color: #2A2A2A; " +
+            "-fx-text-fill: #667eea; " +
+            "-fx-font-size: 16px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-background-radius: 10; " +
+            "-fx-padding: 10 15; " +
+            "-fx-cursor: hand;"
+        );
+
+        nextMonth.setOnMouseEntered(e -> {
+            nextMonth.setStyle(
+                "-fx-background-color: #667eea; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 16px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-background-radius: 10; " +
+                "-fx-padding: 10 15; " +
+                "-fx-cursor: hand;"
+            );
+        });
+
+        nextMonth.setOnMouseExited(e -> {
+            nextMonth.setStyle(
+                "-fx-background-color: #2A2A2A; " +
+                "-fx-text-fill: #667eea; " +
+                "-fx-font-size: 16px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-background-radius: 10; " +
+                "-fx-padding: 10 15; " +
+                "-fx-cursor: hand;"
+            );
+        });
+
+        prevMonth.setOnAction(e -> {
+            currentYearMonth = currentYearMonth.minusMonths(1);
+            updateMonthYearLabel();
+            
+            // Cập nhật DatePicker về ngày đầu tháng mới
+            datePicker.setValue(currentYearMonth.atDay(1));
+        });
+
+        nextMonth.setOnAction(e -> {
+            currentYearMonth = currentYearMonth.plusMonths(1);
+            updateMonthYearLabel();
+            
+            // Cập nhật DatePicker về ngày đầu tháng mới
+            datePicker.setValue(currentYearMonth.atDay(1));
+        });
+
+        // Khi chọn ngày từ DatePicker
+        datePicker.setOnAction(e -> {
+            LocalDate selected = datePicker.getValue();
+            if (selected != null) {
+                currentYearMonth = YearMonth.from(selected);
+                updateMonthYearLabel();
+                render();
+                updateStats();
+                
+                FadeTransition ft = new FadeTransition(Duration.millis(300), listBox);
+                ft.setFromValue(0.5);
+                ft.setToValue(1.0);
+                ft.play();
+            }
+        });
+
+        HBox monthSelector = new HBox(10, prevMonth, monthYearLabel, nextMonth);
+        monthSelector.setAlignment(Pos.CENTER_LEFT);
+        
+        HBox calendarRow = new HBox(20, monthSelector, datePicker);
         calendarRow.setAlignment(Pos.CENTER_LEFT);
 
         VBox calendarBox = new VBox(8, calendarTitle, calendarRow);
@@ -206,12 +307,14 @@ public class TodoPanel extends BorderPane {
             String text = input.getText().trim();
             if (!text.isEmpty()) {
                 LocalDate selectedDate = datePicker.getValue();
-                service.addTask(text, selectedDate);
+                if (selectedDate == null) {
+                    selectedDate = LocalDate.now();
+                }
+                service.addTask(text, selectedDate, "Tôi");
                 input.clear();
                 render();
                 updateStats();
                 
-                // Animation for button press
                 ScaleTransition st = new ScaleTransition(Duration.millis(100), add);
                 st.setToX(0.95);
                 st.setToY(0.95);
@@ -223,46 +326,48 @@ public class TodoPanel extends BorderPane {
 
         input.setOnAction(e -> add.fire());
 
+        // ✅ Gọi updateStats() SAU KHI datePicker đã được khởi tạo
+        updateStats();
         render();
     }
 
-    private void updateSelectedDateLabel() {
-        LocalDate selected = datePicker.getValue();
-        LocalDate today = LocalDate.now();
+    private void updateMonthYearLabel() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("vi", "VN"));
+        String monthYear = currentYearMonth.format(formatter);
+        monthYear = monthYear.substring(0, 1).toUpperCase() + monthYear.substring(1);
         
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String dateStr = selected.format(formatter);
-        
-        if (selected.equals(today)) {
-            selectedDateLabel.setText("📌 Hôm nay - " + dateStr);
-        } else if (selected.equals(today.plusDays(1))) {
-            selectedDateLabel.setText("⏭️ Ngày mai - " + dateStr);
-        } else if (selected.equals(today.minusDays(1))) {
-            selectedDateLabel.setText("⏮️ Hôm qua - " + dateStr);
+        if (currentYearMonth.equals(YearMonth.now())) {
+            monthYearLabel.setText("" + monthYear);
         } else {
-            selectedDateLabel.setText("📆 " + dateStr);
+            monthYearLabel.setText("" + monthYear);
         }
     }
 
     private void updateStats() {
         LocalDate selectedDate = datePicker.getValue();
+        if (selectedDate == null) {
+            selectedDate = LocalDate.now();
+        }
         var tasksForDate = service.getTasksByDate(selectedDate);
         int total = tasksForDate.size();
         long completed = tasksForDate.stream().filter(TodoItem::isCompleted).count();
-        statsLabel.setText(String.format("📊 %d công việc · ✅ %d hoàn thành", total, completed));
+        statsLabel.setText(String.format("%d công việc · %d hoàn thành", total, completed));
     }
 
     private void render() {
         listBox.getChildren().clear();
 
         LocalDate selectedDate = datePicker.getValue();
+        if (selectedDate == null) {
+            selectedDate = LocalDate.now();
+        }
+        
         var tasksForDate = service.getTasksByDate(selectedDate);
 
         for (TodoItem item : tasksForDate) {
             HBox row = row(item);
             listBox.getChildren().add(row);
             
-            // Fade in animation
             FadeTransition ft = new FadeTransition(Duration.millis(300), row);
             ft.setFromValue(0);
             ft.setToValue(1);
@@ -275,7 +380,7 @@ public class TodoPanel extends BorderPane {
         }
 
         if (tasksForDate.isEmpty()) {
-            Label empty = new Label("🎯 Chưa có công việc nào\nHãy thêm công việc cho ngày này!");
+            Label empty = new Label("Chưa có công việc nào\nHãy thêm công việc cho ngày này!");
             empty.setStyle(
                 "-fx-text-fill: #666666; " +
                 "-fx-font-size: 16px; " +
@@ -289,14 +394,16 @@ public class TodoPanel extends BorderPane {
     }
 
     private HBox row(TodoItem item) {
-        MaterialCheckBox cb = new MaterialCheckBox(item.getTitle());
+        // ✅ Gộp tên công việc và người tạo vào 1 dòng
+        String displayText = item.getTitle() + " (" + item.getCreatedBy() + ")";
+        MaterialCheckBox cb = new MaterialCheckBox(displayText);
         cb.setSelected(item.isCompleted());
         cb.setStyle("-fx-text-fill: " + (item.isCompleted() ? "#666666" : "#FFFFFF") + ";");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button del = new Button("🗑");
+        Button del = new Button("x");
         del.setPrefWidth(45);
         del.setMinWidth(45);
         del.setMaxWidth(45);
@@ -345,7 +452,7 @@ public class TodoPanel extends BorderPane {
             st.play();
         });
 
-        HBox row = new HBox(15, cb, spacer, del);
+        HBox row = new HBox(15, cb, spacer, del); // ✅ Đổi contentBox thành cb
         row.setAlignment(Pos.CENTER_LEFT);
         row.setPadding(new Insets(15, 20, 15, 20));
         row.setStyle(
@@ -357,7 +464,6 @@ public class TodoPanel extends BorderPane {
             "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0, 0, 2);"
         );
 
-        // Hover effect
         row.setOnMouseEntered(e -> {
             row.setStyle(
                 "-fx-background-color: " + (item.isCompleted() ? "#232323" : "#2A2A2A") + "; " +
