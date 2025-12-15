@@ -1,3 +1,8 @@
+CÁCH CHẠY
+=> mvn clean javafx:run
+
+Delete button: đỏ (#ff6b6b) với hover effect
+Gradient primary: tím-xanh (#667eea, #764ba2)
 🔥 Ý nghĩa từng tầng
 🟢 view
 

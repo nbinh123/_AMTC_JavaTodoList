@@ -1,21 +1,25 @@
 package app.view;
 
-import javax.swing.JFrame;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class TodoFrame extends JFrame {
+public class TodoFrame extends Application {
 
-    public TodoFrame() {
-        setTitle("Todo App");
-        setSize(1000, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    @Override
+    public void start(Stage stage) {
 
-        add(new TodoPanel());
-         // padding 
-        // getRootPane().setBorder(
-        //     BorderFactory.createEmptyBorder(0, 0, 0, 0)
-        // );
+        TodoPanel root = new TodoPanel();
 
-        setVisible(true);
+        Scene scene = new Scene(root, 1000, 500);
+
+        stage.setTitle("Todo App");
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

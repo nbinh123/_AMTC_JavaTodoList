@@ -1,15 +1,12 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Build JavaFX",
-            "type": "shell",
-            "command": "javac",
-            "args": [
-                "--module-path", "C:/javafx-sdk-25/lib",
-                "--add-modules", "javafx.controls",
-                "Main.java"
-            ]
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run JavaFX",
+      "type": "shell",
+      "command": "mvn javafx:run",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
 }

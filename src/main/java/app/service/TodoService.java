@@ -1,6 +1,8 @@
 package app.service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import app.model.TodoItem;
 import app.model.TodoMongoRepository;
@@ -63,6 +65,19 @@ public class TodoService {
     // Thêm method mới: tìm task đã hoàn thành/chưa hoàn thành
     public List<TodoItem> getTasksByCompletion(boolean completed) {
         return repository.findByCompleted(completed);
+    }
+
+    // ✅ Method mới - thêm task với ngày
+    public void addTask(String title, LocalDate date) {
+        TodoItem item = new TodoItem(title, date);
+        // Thêm vào danh sách...
+    }
+    
+    // ✅ Lấy tasks theo ngày
+    public List<TodoItem> getTasksByDate(LocalDate date) {
+        return getAll().stream()
+            .filter(item -> item.getDate().equals(date))
+            .collect(Collectors.toList());
     }
 }
 

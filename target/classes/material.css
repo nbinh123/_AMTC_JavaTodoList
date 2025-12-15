@@ -1,0 +1,60 @@
+.root {
+    -fx-font-family: "Segoe UI", "Roboto";
+    -fx-background-color: #121212;
+}
+
+/* ===== LABEL ===== */
+.label {
+    -fx-text-fill: #FFFFFF;
+}
+
+/* ===== TEXT FIELD ===== */
+.text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #9E9E9E;
+
+    -fx-border-color: #3F51B5;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 8 4 8 4;
+}
+
+/* ===== BUTTON ===== */
+.button {
+    -fx-background-color: #3F51B5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 18;
+}
+
+.button:hover {
+    -fx-background-color: #5C6BC0;
+}
+
+.button:pressed {
+    -fx-background-color: #3949AB;
+}
+
+/* ===== DELETE BUTTON ===== */
+.button.delete {
+    -fx-background-color: #D32F2F;
+}
+
+.button.delete:hover {
+    -fx-background-color: #E53935;
+}
+
+/* ===== CHECKBOX ===== */
+.check-box {
+    -fx-text-fill: white;
+}
+
+.check-box .box {
+    -fx-background-radius: 4;
+    -fx-border-color: #BDBDBD;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
