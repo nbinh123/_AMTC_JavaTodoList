@@ -5,12 +5,15 @@ app\ulti\CustomButton.class
 app\ulti\CustomLabel.class
 app\Main.class
 app\controller\TodoController.class
+app\model\User.class
 app\view\TodoPanel.class
 app\database\MongoDBConnection.class
 app\view\FX\TodoApp$1.class
 app\model\TodoMongoRepository.class
+app\model\UserMongoRepository.class
 app\database\SimulateFrontend.class
 app\model\TodoItem.class
 app\view\FX\TodoApp.class
 app\ulti\MaterialCheckBox.class
 app\service\TodoService.class
+app\ulti\PasswordUtils.class

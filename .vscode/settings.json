@@ -4,5 +4,11 @@
     "maven.terminal.useJavaHome": true,
     "cSpell.words": [
         "classpathentry"
-    ]
+    ],
+    "java.configuration.runtimes": [
+    {
+        "name": "JavaSE-25",
+        "path": "C:\\path\\to\\jdk-25"
+    }
+]
 }

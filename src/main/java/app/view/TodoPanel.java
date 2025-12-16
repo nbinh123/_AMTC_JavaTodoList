@@ -332,7 +332,7 @@ public class TodoPanel extends BorderPane {
     }
 
     private void updateMonthYearLabel() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("vi", "VN"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.forLanguageTag("vi-VN"));
         String monthYear = currentYearMonth.format(formatter);
         monthYear = monthYear.substring(0, 1).toUpperCase() + monthYear.substring(1);
         
