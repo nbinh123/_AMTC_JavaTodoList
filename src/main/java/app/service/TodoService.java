@@ -9,7 +9,7 @@ import app.model.TodoItem;
 import app.model.TodoMongoRepository;
 import app.model.User;
 import app.model.UserMongoRepository;
-import app.ulti.PasswordUtils;
+import app.utils.PasswordUtils;
 
 public class TodoService {
 
@@ -58,11 +58,11 @@ public class TodoService {
 
         // 4. Tạo user mới
         User newUser = new User(
-            java.util.UUID.randomUUID().toString(),
             username.trim(),
-            email.trim(),
-            hashedPassword
+            hashedPassword,
+            email.trim()
         );
+
 
         // 5. Lưu vào MongoDB
         boolean success = userRepository.register(newUser);
@@ -117,7 +117,7 @@ public class TodoService {
      * Lấy userId hiện tại
      */
     public String getCurrentUserId() {
-        return currentUser != null ? currentUser.getId() : null;
+        return currentUser != null ? currentUser.getUsername() : null;
     }
 
     // ==================== TODO MANAGEMENT ====================
@@ -251,9 +251,10 @@ public class TodoService {
     /**
      * Lấy tasks theo ngày (của user hiện tại)
      */
-    public List<TodoItem> getTasksByDate(LocalDate date) {
+    public List<TodoItem> getTasksByDate(LocalDate date, String username) {
         return getAll().stream()
-            .filter(item -> item.getDate().equals(date))
+            .filter(t -> t.getDate().equals(date))
+            .filter(t -> t.getCreatedBy().equals(username))
             .collect(Collectors.toList());
     }
 

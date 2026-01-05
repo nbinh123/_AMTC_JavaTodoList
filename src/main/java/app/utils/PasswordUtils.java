@@ -1,4 +1,4 @@
-package app.ulti;
+package app.utils;
 
 import org.mindrot.jbcrypt.BCrypt;
 

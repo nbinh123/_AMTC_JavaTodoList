@@ -7,13 +7,14 @@ import java.util.Locale;
 
 import app.model.TodoItem;
 import app.service.TodoService;
-import app.ulti.MaterialCheckBox;
+import app.utils.MaterialCheckBox;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -26,16 +27,30 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import app.session.UserSession;
+import app.model.User;
+import javafx.stage.Stage;
+
 public class TodoPanel extends BorderPane {
 
     private final TodoService service = new TodoService();
     private final VBox listBox = new VBox(12);
     private final Label statsLabel = new Label();
+    private final User currentUser;
     private YearMonth currentYearMonth = YearMonth.now();
     private final Label monthYearLabel = new Label();
+    
     private DatePicker datePicker;
 
     public TodoPanel() {
+
+        // ✅ BLOCK TRUY CẬP TRÁI PHÉP
+        if (!UserSession.getInstance().isLoggedIn()) {
+            throw new IllegalStateException("User chưa đăng nhập");
+        }
+
+        currentUser = UserSession.getInstance().getUser();
+
         setPadding(new Insets(30));
         setStyle("-fx-background-color: linear-gradient(to bottom, #0F0F0F, #1A1A1A);");
 
@@ -54,8 +69,34 @@ public class TodoPanel extends BorderPane {
             "-fx-padding: 5 0 0 0;"
         );
 
-        VBox headerBox = new VBox(5, title, statsLabel);
-        
+        Button logoutBtn = new Button("Đăng xuất");
+        logoutBtn.setStyle(
+            "-fx-background-color: transparent; " +
+            "-fx-text-fill: #ff6b6b; " +
+            "-fx-font-size: 13px; " +
+            "-fx-cursor: hand;"
+        );
+
+        logoutBtn.setOnAction(e -> {
+            UserSession.getInstance().logout();
+
+            Stage stage = (Stage) getScene().getWindow();
+            stage.setScene(
+                new Scene(
+                    new app.view.LoginPanel(stage),
+                    400,
+                    300
+                )
+            );
+        });
+        VBox headerText = new VBox(5, title, statsLabel);
+
+        Region spacerHeader = new Region();
+        HBox.setHgrow(spacerHeader, Priority.ALWAYS);
+
+        HBox headerBox = new HBox(10, headerText, spacerHeader, logoutBtn);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+
         /* ===== MONTH/YEAR SELECTOR ===== */
         Label calendarTitle = new Label("Chọn ngày");
         calendarTitle.setStyle(
@@ -310,7 +351,7 @@ public class TodoPanel extends BorderPane {
                 if (selectedDate == null) {
                     selectedDate = LocalDate.now();
                 }
-                service.addTask(text, selectedDate, "Tôi");
+                service.addTask(text, selectedDate, currentUser.getUsername());
                 input.clear();
                 render();
                 updateStats();
@@ -348,7 +389,7 @@ public class TodoPanel extends BorderPane {
         if (selectedDate == null) {
             selectedDate = LocalDate.now();
         }
-        var tasksForDate = service.getTasksByDate(selectedDate);
+        var tasksForDate = service.getTasksByDate(selectedDate, currentUser.getUsername());
         int total = tasksForDate.size();
         long completed = tasksForDate.stream().filter(TodoItem::isCompleted).count();
         statsLabel.setText(String.format("%d công việc · %d hoàn thành", total, completed));
@@ -362,7 +403,7 @@ public class TodoPanel extends BorderPane {
             selectedDate = LocalDate.now();
         }
         
-        var tasksForDate = service.getTasksByDate(selectedDate);
+        var tasksForDate = service.getTasksByDate(selectedDate, currentUser.getUsername());
 
         for (TodoItem item : tasksForDate) {
             HBox row = row(item);

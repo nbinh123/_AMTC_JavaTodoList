@@ -1,12 +1,17 @@
 package app.model;
 
+import app.model.User;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Updates.set;
+
 
 import app.database.MongoDBConnection;
 
@@ -92,7 +97,7 @@ public class UserMongoRepository {
     }
     
     // Cập nhật last login
-    private void updateLastLogin(String userId) {
+    private void updateLastLogin(ObjectId userId) {
         try {
             collection.updateOne(
                 Filters.eq("_id", userId),
@@ -102,7 +107,7 @@ public class UserMongoRepository {
             System.err.println("Error updating last login: " + e.getMessage());
         }
     }
-    
+
     // Lấy tất cả users
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
@@ -134,4 +139,21 @@ public class UserMongoRepository {
             return 0;
         }
     }
+    public void createAdminIfNotExists() {
+
+        if (existsByUsername("admin")) {
+            System.out.println("Admin already exists");
+            return;
+        }
+
+        User admin = new User(
+            "admin",
+            "admin123",           // mật khẩu test
+            "admin@todo.local"
+        );
+
+        collection.insertOne(admin);
+        System.out.println("✅ Admin user created: admin / admin123");
+    }
+
 }

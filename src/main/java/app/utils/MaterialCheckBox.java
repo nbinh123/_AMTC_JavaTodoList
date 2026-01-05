@@ -1,4 +1,4 @@
-package app.ulti;
+package app.utils;
 
 import javafx.scene.control.CheckBox;
 import javafx.scene.effect.DropShadow;

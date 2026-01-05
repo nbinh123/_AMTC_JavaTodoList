@@ -1,4 +1,4 @@
-package app.ulti;
+package app.utils;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.StackPane;
