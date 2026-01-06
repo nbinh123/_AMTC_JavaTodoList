@@ -3,14 +3,19 @@ package app.utils;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordUtils {
-
-    // Hash mật khẩu mới
-    public static String hash(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+    
+    // Hash password khi đăng ký
+    public static String hash(String plainPassword) {
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt(10));
     }
-
-    // Kiểm tra mật khẩu
-    public static boolean check(String plainPassword, String hashed) {
-        return BCrypt.checkpw(plainPassword, hashed);
+    
+    // Verify password khi đăng nhập
+    public static boolean verify(String plainPassword, String hashedPassword) {
+        try {
+            return BCrypt.checkpw(plainPassword, hashedPassword);
+        } catch (Exception e) {
+            System.err.println("Password verification error: " + e.getMessage());
+            return false;
+        }
     }
 }

@@ -1,7 +1,5 @@
 package app.model;
 
-import app.model.User;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,10 +8,11 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
-
 import app.database.MongoDBConnection;
+import app.utils.PasswordUtils;
 
 public class UserMongoRepository {
     
@@ -83,24 +82,39 @@ public class UserMongoRepository {
     // Xác thực đăng nhập
     public User authenticate(String username, String password) {
         try {
-            User user = findByUsername(username);
-            if (user != null && user.getPassword().equals(password)) {
-                // Cập nhật last login
-                updateLastLogin(user.getId());
+            User user = collection.find(eq("username", username)).first();
+            
+            if (user == null) {
+                System.err.println("User not found: " + username);
+                return null;
+            }
+            
+            // ✅ QUAN TRỌNG: Dùng verify thay vì so sánh trực tiếp
+            if (PasswordUtils.verify(password, user.getPassword())) {
+                user.setLastLogin(new Date());
+                collection.updateOne(
+                    eq("username", username),
+                    set("last_login", new Date())
+                );
+                System.out.println("Authentication successful: " + username);
                 return user;
             }
+            
+            System.err.println("Wrong password for: " + username);
             return null;
+            
         } catch (Exception e) {
-            System.err.println("Error authenticating user: " + e.getMessage());
+            System.err.println("Authentication error: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
-    
     // Cập nhật last login
     private void updateLastLogin(ObjectId userId) {
         try {
             collection.updateOne(
                 Filters.eq("_id", userId),
+                // Filters.eq("_id", new ObjectId(userId,.toHexString())),
                 set("last_login", new Date())
             );
         } catch (Exception e) {
@@ -153,7 +167,7 @@ public class UserMongoRepository {
         );
 
         collection.insertOne(admin);
-        System.out.println("✅ Admin user created: admin / admin123");
+        System.out.println("Admin user created: admin / admin123");
     }
 
 }

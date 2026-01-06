@@ -1,7 +1,7 @@
 package app;
 
 import app.session.UserSession;
-import app.view.LoginPanel;
+import app.view.AuthPanel;  
 import app.view.TodoPanel;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -14,13 +14,13 @@ public class Main extends Application {
 
         Scene scene;
 
-        // ✅ CHECK LOGIN NGAY TỪ ĐẦU
         if (UserSession.getInstance().isLoggedIn()) {
             scene = new Scene(new TodoPanel(), 1000, 500);
             stage.setTitle("Material Todo App");
         } else {
-            scene = new Scene(new LoginPanel(stage), 400, 300);
-            stage.setTitle("Login");
+
+            scene = new Scene(new AuthPanel(stage), 500, 700);
+            stage.setTitle("Todo App - Đăng nhập");  
         }
 
         scene.getStylesheets().add(
@@ -28,6 +28,7 @@ public class Main extends Application {
         );
 
         stage.setScene(scene);
+        stage.centerOnScreen();  
         stage.show();
     }
 
@@ -35,4 +36,3 @@ public class Main extends Application {
         launch(args);
     }
 }
-

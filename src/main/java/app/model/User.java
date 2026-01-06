@@ -35,6 +35,11 @@ public class User {
         this.createdAt = new Date();
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     // ===== GETTERS & SETTERS =====
     public ObjectId getId() {
         return id;

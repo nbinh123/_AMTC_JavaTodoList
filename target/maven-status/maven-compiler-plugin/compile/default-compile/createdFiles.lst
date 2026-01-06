@@ -1,12 +1,12 @@
 app\session\UserSession.class
 app\utils\MaterialCheckBox.class
 app\utils\CustomLabel.class
-app\view\LoginPanel.class
 app\model\TodoRepository.class
 app\view\TodoFrame.class
 app\Main.class
 app\controller\TodoController.class
 app\model\User.class
+app\utils\CreateAdmin.class
 app\utils\CustomButton.class
 app\utils\CustomPane.class
 app\view\TodoPanel.class
@@ -14,6 +14,7 @@ app\database\MongoDBConnection.class
 app\view\FX\TodoApp$1.class
 app\model\TodoMongoRepository.class
 app\model\UserMongoRepository.class
+app\view\AuthPanel.class
 app\utils\PasswordUtils.class
 app\database\SimulateFrontend.class
 app\model\TodoItem.class
